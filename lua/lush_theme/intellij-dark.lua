@@ -2,24 +2,21 @@
 -- VSCode Theme Color Reference: https://code.visualstudio.com/api/references/theme-color#command-center-colors
 
 local lush = require('lush')
+local hsl = lush.hsl
 
 local norm_fg = '#D4D4D4'
 local norm_bg = '#1E1E1E'
 
-local dark_red = '#D16969'
-local orange = '#f9ae28'
 local brown = '#CE9178'
 local yellow = '#DCDCAA'
 local yellow_orange = '#D7BA7D'
 local green = '#6A9955'
 local blue_green = '#4EC9B0'
-local light_green = '#B5CEA8'
 local blue = '#4fc1ff'
 local blue2 = '#2aaaff'
 local light_blue = '#9CDCFE'
 local dark_blue = '#569CD6'
 local cornflower_blue = '#6796E6'
-local dark_pink = '#C586C0'
 local bright_pink = '#f92672'
 local purple = '#ae81ff'
 
@@ -42,7 +39,6 @@ local folded_blue = '#202d39' -- editor.foldBackground
 local float_border_fg = '#454545'
 local indent_guide_fg = '#404040'
 local indent_guide_scope_fg = '#707070'
-local label_fg = '#c8c8c8'
 
 ---@diagnostic disable
 local theme = lush(function(injected_functions)
@@ -149,7 +145,7 @@ local theme = lush(function(injected_functions)
     TabLineFill { fg = 'NONE', bg = black2 },
     TabLineSel { fg = white, bg = norm_bg },
     Title { fg = dark_blue, gui = 'bold' },
-    Visual { bg = '#264F78' },
+    Visual { bg = hsl(220, 50, 40) },
     -- VisualNOS { },
     WarningMsg { fg = warn_yellow },
     Whitespace { fg = '#3e3e3d' },
@@ -160,33 +156,33 @@ local theme = lush(function(injected_functions)
     --
     -- Syntax
     --
-    Comment { fg = green, gui = 'italic' },
+    Comment { fg = hsl(0, 0, 33) },
 
-    Constant { fg = dark_blue },
-    String { fg = brown },
+    Constant { fg = hsl(294, 86, 75), gui = 'italic' },
+    String { fg = hsl(100, 35, 55) },
     Character { Constant },
-    Number { fg = light_green },
-    Boolean { Constant },
+    Number { fg = hsl(185, 97, 40) },
+    Boolean { fg = hsl(30, 97, 50) },
     Float { Number },
 
-    Identifier { fg = light_blue },
-    Function { fg = yellow },
+    Identifier { fg = hsl(0, 100, 50) },
+    Function { fg = hsl(34, 49, 65) },
 
-    Statement { fg = dark_pink },
+    Keyword { fg = hsl(30, 100, 65) },
+    Statement { Keyword },
     Conditional { Statement },
     Repeat { Statement },
     Label { Statement },
-    Operator { fg = norm_fg },
-    Keyword { fg = dark_blue },
+    Operator { fg = hsl(0, 0, 100) },
     Exception { Statement },
 
-    PreProc { fg = dark_pink },
-    Include { PreProc },
+    PreProc { fg = hsl(0, 100, 50) },
+    Include { Keyword },
     Define { PreProc },
     Macro { PreProc },
     PreCondit { PreProc },
 
-    Type { fg = dark_blue },
+    Type { Number },
     StorageClass { Type },
     Structure { Type },
     Typedef { Type },
@@ -261,28 +257,28 @@ local theme = lush(function(injected_functions)
     -- To find all the capture names, see https://github.com/nvim-treesitter/nvim-treesitter/blob/master/CONTRIBUTING.md#highlights)
 
     -- Identifiers
-    sym("@variable") { fg = light_blue }, -- various variable names
-    sym("@variable.builtin") { fg = dark_blue }, -- built-in variable names (e.g. `this`)
-    sym("@variable.parameter") { fg = orange }, -- parameters of a function, use a conspicuous color (VSCode uses the common light_blue)
-    sym("@variable.member") { fg = light_blue }, -- object and struct fields
+    sym("@variable") { fg = hsl(0, 0, 80) }, -- various variable names
+    sym("@variable.builtin") { Keyword }, -- built-in variable names (e.g. `this`)
+    sym("@variable.parameter") { sym("@variable") }, -- parameters of a function, use a conspicuous color (VSCode uses the common light_blue)
+    sym("@variable.member") { sym("@variable") }, -- object and struct fields
 
     sym("@constant") { Constant }, -- constant identifiers
     sym("@constant.builtin") { Constant }, -- built-in constant values
     sym("@constant.macro") { Constant }, -- constants defined by the preprocessor
 
-    sym("@module") { fg = blue_green }, -- modules or namespaces
+    sym("@module") { fg = hsl(100, 50, 70) }, -- modules or namespaces
     sym("@module.builtin") { sym("@module") }, -- built-in modules or namespaces
-    sym("@label") { fg = label_fg }, -- GOTO and other labels (e.g. `label:` in C), including heredoc labels
+    sym("@label") { fg = hsl(0, 100, 50) }, -- GOTO and other labels (e.g. `label:` in C), including heredoc labels
 
     -- Literals
     sym("@string") { String }, -- string literals
     sym("@string.documentation") { fg = brown }, -- string documenting code (e.g. Python docstrings)
-    sym("@string.regexp") { fg = dark_red }, -- regular expressions
-    sym("@string.escape") { fg = yellow_orange }, -- escape sequences
+    sym("@string.regexp") { SpecialChar }, -- regular expressions
+    sym("@string.escape") { SpecialChar }, -- escape sequences
     sym("@string.special") { SpecialChar }, -- other special strings (e.g. dates)
-    sym("@string.special.symbol") { sym("@string.special") }, -- symbols or atoms
-    sym("@string.special.url") { sym("@string.special") }, -- URIs (e.g. hyperlinks), it's url outside markup
-    sym("@string.special.path") { sym("@string.special") }, -- filenames
+    sym("@string.special.symbol") { SpecialChar }, -- symbols or atoms
+    sym("@string.special.url") { SpecialChar }, -- URIs (e.g. hyperlinks), it's url outside markup
+    sym("@string.special.path") { SpecialChar }, -- filenames
 
     sym("@character") { Character }, -- character literals
     sym("@character.special") { SpecialChar }, -- special characters (e.g. wildcards)
@@ -292,16 +288,16 @@ local theme = lush(function(injected_functions)
     sym("@number.float") { Float }, -- floating-point number literals
 
     -- Types
-    sym("@type") { fg = blue_green }, -- type or class definitions and annotations
-    sym("@type.builtin") { fg = dark_blue }, -- built-in types
-    sym("@type.definition") { fg = blue_green }, -- identifiers in type definitions (e.g. `typedef <type> <identifier>` in C)
-    sym("@type.qualifier") { fg = dark_blue }, -- type qualifiers (e.g. `const`)
+    sym("@type") { fg = hsl(189, 60, 53) }, -- type or class definitions and annotations
+    sym("@type.builtin") { Boolean }, -- built-in types
+    sym("@type.definition") { sym("@variable") }, -- identifiers in type definitions (e.g. `typedef <type> <identifier>` in C)
+    sym("@type.qualifier") { Keyword }, -- type qualifiers (e.g. `const`)
 
-    sym("@attribute") { fg = blue_green }, -- attribute annotations (e.g. Python decorators)
+    sym("@attribute") { fg = hsl(0, 100, 50) }, -- attribute annotations (e.g. Python decorators)
     sym("@property") { sym("@variable.member") }, -- the key in key/value pairs
 
     -- Function
-    sym("@function") { Function }, -- function definitions
+    sym("@function") { fg = hsl(208, 100, 65) }, -- function definitions
     sym("@function.builtin") { Function }, -- built-in functions
     sym("@function.call") { Function }, -- function calls
     sym("@function.macro") { Function }, -- preprocessor macros
@@ -314,13 +310,13 @@ local theme = lush(function(injected_functions)
 
     -- Keyword
     sym("@keyword") { Keyword }, -- keywords not fitting into specific categories
-    sym("@keyword.coroutine") { fg = dark_pink }, -- keywords related to coroutines (e.g. `go` in Go, `async/await` in Python)
-    sym("@keyword.function") { fg = dark_blue }, -- keywords that define a function (e.g. `func` in Go, `def` in Python)
-    sym("@keyword.operator") { sym("@operator") }, -- operators that are English words (e.g. `and` / `or`)
+    sym("@keyword.coroutine") { Keyword }, -- keywords related to coroutines (e.g. `go` in Go, `async/await` in Python)
+    sym("@keyword.function") { Keyword }, -- keywords that define a function (e.g. `func` in Go, `def` in Python)
+    sym("@keyword.operator") { Keyword }, -- operators that are English words (e.g. `and` / `or`)
     sym("@keyword.import") { Include }, -- keywords for including modules (e.g. `import` / `from` in Python)
     sym("@keyword.storage") { StorageClass }, -- modifiers that affect storage in memory or life-time
     sym("@keyword.repeat") { Repeat }, -- keywords related to loops (e.g. `for` / `while`)
-    sym("@keyword.return") { fg = dark_pink }, --  keywords like `return` and `yield`
+    sym("@keyword.return") { Keyword }, --  keywords like `return` and `yield`
     sym("@keyword.debug") { Debug }, -- keywords related to debugging
     sym("@keyword.exception") { Exception }, -- keywords related to exceptions (e.g. `throw` / `catch`)
 
