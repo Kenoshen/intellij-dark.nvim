@@ -165,22 +165,22 @@ local theme = lush(function(injected_functions)
     Boolean { fg = hsl(30, 97, 50) },
     Float { Number },
 
-    Identifier { fg = hsl(0, 100, 50) },
     Function { fg = hsl(34, 49, 65) },
 
     Keyword { fg = hsl(30, 100, 65) },
+    Identifier { Keyword },
     Statement { Keyword },
     Conditional { Statement },
     Repeat { Statement },
     Label { Statement },
-    Operator { fg = hsl(0, 0, 100) },
+    Operator { fg = hsl(0, 0, 80) },
     Exception { Statement },
 
-    PreProc { fg = hsl(0, 100, 50) },
+    PreProc { Keyword },
     Include { Keyword },
-    Define { PreProc },
-    Macro { PreProc },
-    PreCondit { PreProc },
+    Define { fg = hsl(300, 100, 50) },
+    Macro { fg = hsl(300, 100, 50) },
+    PreCondit { fg = hsl(300, 100, 50) },
 
     Type { Number },
     StorageClass { Type },
@@ -232,11 +232,11 @@ local theme = lush(function(injected_functions)
     DiagnosticVirtualTextInfo { DiagnosticInfo, bg = '#212a35' },
     DiagnosticVirtualTextHint { DiagnosticHint, bg = black },
     DiagnosticVirtualTextOk { DiagnosticOk, bg = '#233323' },
-    DiagnosticUnderlineError { gui = 'undercurl', sp = error_red },
-    DiagnosticUnderlineWarn { gui = 'undercurl', sp = warn_yellow },
-    DiagnosticUnderlineInfo { gui = 'undercurl', sp = info_blue },
-    DiagnosticUnderlineHint { gui = 'undercurl', sp = hint_gray },
-    DiagnosticUnderlineOk { gui = 'undercurl', sp = ok_green },
+    DiagnosticUnderlineError { gui = 'undercurl', fg = error_red, sp = error_red },
+    DiagnosticUnderlineWarn { gui = 'undercurl', fg = warn_yellow, sp = warn_yellow },
+    DiagnosticUnderlineInfo { gui = 'undercurl', fg = info_blue, sp = info_blue },
+    DiagnosticUnderlineHint { gui = 'undercurl', fg = hint_gray, sp = hint_gray },
+    DiagnosticUnderlineOk { gui = 'undercurl', fg = ok_green, sp = ok_green },
     DiagnosticFloatingError { DiagnosticError },
     DiagnosticFloatingWarn { DiagnosticWarn },
     DiagnosticFloatingInfo { DiagnosticInfo },
@@ -260,15 +260,16 @@ local theme = lush(function(injected_functions)
     sym("@variable") { fg = hsl(0, 0, 80) }, -- various variable names
     sym("@variable.builtin") { Keyword }, -- built-in variable names (e.g. `this`)
     sym("@variable.parameter") { sym("@variable") }, -- parameters of a function, use a conspicuous color (VSCode uses the common light_blue)
+    sym("@variable.parameter.graphql") { fg = hsl(210, 50, 70) }, -- parameters of a function, use a conspicuous color (VSCode uses the common light_blue)
     sym("@variable.member") { sym("@variable") }, -- object and struct fields
 
     sym("@constant") { Constant }, -- constant identifiers
-    sym("@constant.builtin") { Constant }, -- built-in constant values
+    sym("@constant.builtin") { Keyword }, -- built-in constant values
     sym("@constant.macro") { Constant }, -- constants defined by the preprocessor
 
     sym("@module") { fg = hsl(100, 50, 70) }, -- modules or namespaces
     sym("@module.builtin") { sym("@module") }, -- built-in modules or namespaces
-    sym("@label") { fg = hsl(0, 100, 50) }, -- GOTO and other labels (e.g. `label:` in C), including heredoc labels
+    sym("@label") { fg = hsl(300, 100, 50) }, -- GOTO and other labels (e.g. `label:` in C), including heredoc labels
 
     -- Literals
     sym("@string") { String }, -- string literals
@@ -293,8 +294,9 @@ local theme = lush(function(injected_functions)
     sym("@type.definition") { sym("@variable") }, -- identifiers in type definitions (e.g. `typedef <type> <identifier>` in C)
     sym("@type.qualifier") { Keyword }, -- type qualifiers (e.g. `const`)
 
-    sym("@attribute") { fg = hsl(0, 100, 50) }, -- attribute annotations (e.g. Python decorators)
+    sym("@attribute") { fg = hsl(300, 100, 50) }, -- attribute annotations (e.g. Python decorators)
     sym("@property") { sym("@variable.member") }, -- the key in key/value pairs
+    sym("@property.graphql") { fg = hsl(275, 40, 70) }, -- the key in key/value pairs
 
     -- Function
     sym("@function") { fg = hsl(208, 100, 65) }, -- function definitions
@@ -323,7 +325,7 @@ local theme = lush(function(injected_functions)
     sym("@keyword.conditional") { Conditional }, -- keywords related to conditionals (e.g. `if` / `else`)
     sym("@keyword.conditional.ternary") { sym("@operator") }, -- ternary operator (e.g. `?` / `:`)
 
-    sym("@keyword.directive") { PreProc }, -- various preprocessor directives & shebangs
+    sym("@keyword.directive") { fg = hsl(300, 100, 50) }, -- various preprocessor directives & shebangs
     sym("@keyword.directive.define") { sym("@keyword.directive") }, -- preprocessor definition directives
 
     -- Punctuation
@@ -392,11 +394,12 @@ local theme = lush(function(injected_functions)
     sym("@lsp.type.parameter") { sym("@variable.parameter") },
     sym("@lsp.type.variable") { sym("@variable") },
     sym("@lsp.type.property") { sym("@property") },
-    sym("@lsp.type.enumMember") { fg = blue },
-    -- sym("@lsp.type.event") { },  -- TODO: what is event property?
-    sym("@lsp.type.function") { sym("@function") },
+    sym("@lsp.type.enumMember") { sym("@number") },
+    -- sym("@lsp.type.function") { sym("@function") },
     sym("@lsp.type.method") { sym("@function") },
     sym("@lsp.type.macro") { sym("@constant.macro") },
+    sym("@lsp.type.constant") { sym("@constant") },
+    sym("@lsp.type.variable.constant") { sym("@constant") },
     sym("@lsp.type.keyword") { sym("@keyword") },
     sym("@lsp.type.comment") { sym("@comment") },
     sym("@lsp.type.string") { sym("@string") },
@@ -405,7 +408,7 @@ local theme = lush(function(injected_functions)
     sym("@lsp.type.operator") { sym("@operator") },
     sym("@lsp.type.decorator") { sym("@attribute") },
     sym("@lsp.type.escapeSequence") { sym("@string.escape") },
-    sym("@lsp.type.formatSpecifier") { fg = light_blue },
+    sym("@lsp.type.formatSpecifier") { sym("@number") },
     sym("@lsp.type.builtinType") { sym("@type.builtin") },
     sym("@lsp.type.typeAlias") { sym("@type.definition") },
     sym("@lsp.type.unresolvedReference") { gui = 'undercurl', sp = error_red },
@@ -419,15 +422,16 @@ local theme = lush(function(injected_functions)
     sym("@lsp.typemod.class.defaultLibrary") { sym("@type.builtin") },
     sym("@lsp.typemod.variable.defaultLibrary") { sym("@variable.builtin") },
     sym("@lsp.typemod.function.defaultLibrary") { sym("@function.builtin") },
+    sym("@lsp.typemod.function.definition") { sym("@function") },
     sym("@lsp.typemod.method.defaultLibrary") { sym("@function.builtin") },
     sym("@lsp.typemod.macro.defaultLibrary") { sym("@function.builtin") },
     sym("@lsp.typemod.struct.defaultLibrary") { sym("@type.builtin") },
     sym("@lsp.typemod.enum.defaultLibrary") { sym("@type.builtin") },
     sym("@lsp.typemod.enumMember.defaultLibrary") { sym("@constant.builtin") },
-    sym("@lsp.typemod.variable.readonly") { fg = blue },
+    sym("@lsp.typemod.variable.readonly") { sym("@constant") },
     sym("@lsp.typemod.variable.callable") { sym("@function") },
     sym("@lsp.typemod.variable.static") { sym("@constant") },
-    sym("@lsp.typemod.property.readonly") { fg = blue },
+    sym("@lsp.typemod.property.readonly") { sym("@constant") },
     sym("@lsp.typemod.keyword.async") { sym("@keyword.coroutine") },
     sym("@lsp.typemod.keyword.injected") { sym("@keyword") },
     -- Set injected highlights. Mainly for Rust doc comments and also works for
@@ -437,7 +441,7 @@ local theme = lush(function(injected_functions)
     sym("@lsp.typemod.string.injected") { sym("@string") },
     sym("@lsp.typemod.variable.injected") { sym("@variable") },
 
-    -- Language specific
+   -- Language specific
     -- Lua
     sym("@lsp.type.property.lua") { sym("@variable.member.lua") },
 
